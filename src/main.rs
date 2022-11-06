@@ -1,7 +1,6 @@
 //! Renders a 2D scene containing a single, moving sprite.
 
-use bevy::{prelude::*, window::PresentMode};
-
+use bevy::{prelude::*, sprite::MaterialMesh2dBundle, window::PresentMode};
 fn main() {
     App::new()
         .insert_resource(WindowDescriptor {
@@ -22,7 +21,12 @@ enum Direction {
     Down,
 }
 
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn setup(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+) {
     commands.spawn_bundle(Camera2dBundle::default());
     commands
         .spawn_bundle(SpriteBundle {
@@ -31,6 +35,14 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             ..default()
         })
         .insert(Direction::Up);
+
+    commands.spawn_bundle(Camera2dBundle::default());
+    commands.spawn_bundle(MaterialMesh2dBundle {
+        mesh: meshes.add(Mesh::from(shape::Quad::default())).into(),
+        transform: Transform::default().with_scale(Vec3::splat(128.)),
+        material: materials.add(ColorMaterial::from(Color::PURPLE)),
+        ..default()
+    });
 }
 
 /// The sprite is animated by changing its translation depending on the time that has passed since
