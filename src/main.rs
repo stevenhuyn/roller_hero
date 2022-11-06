@@ -1,9 +1,15 @@
 //! Renders a 2D scene containing a single, moving sprite.
 
-use bevy::prelude::*;
+use bevy::{prelude::*, window::PresentMode};
 
 fn main() {
     App::new()
+        .insert_resource(WindowDescriptor {
+            width: 400.0,
+            height: 400.0,
+            present_mode: PresentMode::AutoVsync,
+            ..default()
+        })
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup)
         .add_system(sprite_movement)
