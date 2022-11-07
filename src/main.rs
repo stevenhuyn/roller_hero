@@ -6,6 +6,7 @@ fn main() {
         .insert_resource(WindowDescriptor {
             width: 400.0,
             height: 400.0,
+            canvas: Some("#gamecanvas".to_string()),
             present_mode: PresentMode::AutoVsync,
             ..default()
         })

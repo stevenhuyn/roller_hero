@@ -1,4 +1,5 @@
 <html>
+
 <head>
     <meta charset="UTF-8" />
     <style>
@@ -13,14 +14,42 @@
             background-repeat: repeat;
             background-size: 20px 20px;
         }
-        canvas {
+
+        .container {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .title {
+            display: flex;
+            justify-content: center;
+        }
+
+        .canvas-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        #gamecanvas {
             background-color: white;
-            width: 100%;
+
         }
     </style>
 </head>
-<script type="module">
-    import init from './out/roller_hero.js'
-    init()
-</script>
+
+<body>
+    <div class="container">
+        <div class="title">Hello World!</div>
+        <div class="canvas-container">
+            <canvas id="gamecanvas"></canvas>
+        </div>
+    </div>
+
+    <script type="module">
+        import init from './out/roller_hero.js'
+        init()
+    </script>
+</body>
+
 </html>

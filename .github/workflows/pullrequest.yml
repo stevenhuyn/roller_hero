@@ -2,21 +2,20 @@ name: Pull Request
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: install wasm32 target
-      run: rustup target add wasm32-unknown-unknown
-    - name: cargo build
-      run: cargo build --release --target wasm32-unknown-unknown
-    - name: wasm-bindgen
-      run: wasm-bindgen --out-dir ./out/ --target web ./target/
+      - uses: actions/checkout@v3
+      - name: install wasm32 target
+        run: rustup target add wasm32-unknown-unknown
+      - name: cargo build
+        run: cargo build --release --target wasm32-unknown-unknown
+      - name: wasm-bindgen
+        run: wasm-bindgen --out-dir ./out/ --target web ./target/wasm32-unknown-unknown/release/roller_hero.wasm
