@@ -29,13 +29,14 @@ fn main() {
         )
         .add_system_set(
             SystemSet::new()
-                .with_run_criteria(FixedTimestep::step(2.))
+                .with_run_criteria(FixedTimestep::step(0.5))
                 .with_system(diamond_spawner),
         )
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup)
         .add_system(sprite_movement)
         .add_system(diamond_mover)
+        .add_system(diamond_deleter)
         .run();
 }
 
@@ -52,8 +53,19 @@ enum Direction {
     Down,
 }
 
-fn setup(mut commands: Commands) {
+fn setup(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+) {
     commands.spawn_bundle(Camera2dBundle::default());
+    commands.spawn_bundle(MaterialMesh2dBundle {
+        mesh: meshes.add(Mesh::from(shape::Quad::default())).into(),
+        transform: Transform::from_translation(Vec3::new(-400., 0., 1.))
+            .with_scale(Vec3::new(10., 1000., 1.)),
+        material: materials.add(ColorMaterial::from(Color::GOLD)),
+        ..default()
+    });
 }
 
 fn sprite_movement(time: Res<Time>, mut sprite_position: Query<(&mut Direction, &mut Transform)>) {
@@ -74,7 +86,7 @@ fn sprite_movement(time: Res<Time>, mut sprite_position: Query<(&mut Direction, 
 #[derive(Component)]
 struct Diamond;
 
-const DIAMOND_XVEL: f32 = -200.;
+const DIAMOND_XVEL: f32 = -400.;
 
 fn diamond_mover(
     mut commands: Commands,
@@ -83,7 +95,22 @@ fn diamond_mover(
 ) {
     for (entity, _, mut transform) in query.iter_mut() {
         transform.translation.x += DIAMOND_XVEL * time.delta_seconds();
-        if transform.translation.x <= -300. {
+        if transform.translation.x <= -551. {
+            commands.entity(entity).despawn_recursive();
+        }
+    }
+}
+
+fn diamond_deleter(
+    mut commands: Commands,
+    keyboard_input: Res<Input<KeyCode>>,
+    mut query: Query<(Entity, &Diamond, &Transform)>,
+) {
+    for (entity, _, transform) in query.iter_mut() {
+        if transform.translation.x - 50. <= -410.
+            && transform.translation.x + 50. >= -390.
+            && keyboard_input.pressed(KeyCode::Space)
+        {
             commands.entity(entity).despawn_recursive();
         }
     }
@@ -99,7 +126,7 @@ fn diamond_spawner(
         .spawn_bundle(MaterialMesh2dBundle {
             mesh: meshes.add(Mesh::from(shape::Quad::default())).into(),
             transform: Transform::from_translation(Vec3::new(
-                650. + (DIAMOND_XVEL * time.delta_seconds()),
+                550. + (DIAMOND_XVEL * time.delta_seconds()),
                 0.,
                 0.,
             ))
