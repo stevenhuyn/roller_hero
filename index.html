@@ -21,27 +21,29 @@
             flex-direction: column;
         }
 
-        .title {
-            display: flex;
-            justify-content: center;
-        }
-
-        .canvas-container {
+        .centered-div {
             display: flex;
             justify-content: center;
         }
 
         #gamecanvas {
             background-color: white;
+        }
 
+        #gamecanvas:focus {
+            outline: red solid 1px;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="title">Hello World!</div>
-        <div class="canvas-container">
+
+        <div class="centered-div">
+            <h1>Roller Hero</h1>
+        </div>
+        <div class="centered-div">Press Space to Roll!</div>
+        <div class="centered-div">
             <canvas id="gamecanvas"></canvas>
         </div>
     </div>
@@ -49,6 +51,14 @@
     <script type="module">
         import init from './out/roller_hero.js'
         init()
+        document.getElementById("gamecanvas").focus()
+
+        window.addEventListener("keypress", e => {
+            console.log(e.key)
+            if (e.key === " ") {
+                document.getElementById("gamecanvas").focus()
+            }
+        })
     </script>
 </body>
 
