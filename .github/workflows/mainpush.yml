@@ -26,6 +26,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      # selecting a toolchain either by action or manual `rustup` calls should happen
+      # before the plugin, as the cache uses the current rustc version as its cache key
+      - run: |
+          rustup set auto-self-update disable
+          rustup toolchain install stable --profile minimal --target wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
       - name: install wasm32 target
         run: rustup target add wasm32-unknown-unknown
       - name: install wasm-bindgen-cli
