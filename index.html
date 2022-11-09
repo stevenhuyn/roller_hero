@@ -1,65 +1,66 @@
 <html>
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <style>
-        body {
-            background: linear-gradient(135deg,
-                    white 0%,
-                    white 49%,
-                    black 49%,
-                    black 51%,
-                    white 51%,
-                    white 100%);
-            background-repeat: repeat;
-            background-size: 20px 20px;
-        }
+      body {
+        background: linear-gradient(
+          135deg,
+          white 0%,
+          white 49%,
+          black 49%,
+          black 51%,
+          white 51%,
+          white 100%
+        );
+        background-repeat: repeat;
+        background-size: 20px 20px;
+      }
 
-        .container {
-            display: flex;
-            justify-content: center;
-            flex-direction: column;
-        }
+      .container {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+      }
 
-        .centered-div {
-            display: flex;
-            justify-content: center;
-        }
+      .centered-div {
+        display: flex;
+        justify-content: center;
+      }
 
-        #gamecanvas {
-            background-color: white;
-        }
+      #gamecanvas {
+        background-color: white;
+        max-width: 100vw;
+        max-height: 100vh;
+      }
 
-        #gamecanvas:focus {
-            outline: red solid 1px;
-        }
+      #gamecanvas:focus {
+        outline: red solid 1px;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="container">
-
-        <div class="centered-div">
-            <h1>Roller Hero</h1>
-        </div>
-        <div class="centered-div">Press Space to Roll!</div>
-        <div class="centered-div">
-            <canvas id="gamecanvas"></canvas>
-        </div>
+      <div class="centered-div">
+        <h1>Roller Hero</h1>
+      </div>
+      <div class="centered-div">Press Space to Roll!</div>
+      <div class="centered-div">
+        <canvas id="gamecanvas"></canvas>
+      </div>
     </div>
 
     <script type="module">
-        import init from './out/roller_hero.js'
-        init()
-        document.getElementById("gamecanvas").focus()
+      import init from "./out/roller_hero.js";
+      init();
+      document.getElementById("gamecanvas").focus();
 
-        window.addEventListener("keypress", e => {
-            console.log(e.key)
-            if (e.key === " ") {
-                document.getElementById("gamecanvas").focus()
-            }
-        })
+      window.addEventListener("keypress", (e) => {
+        console.log(e.key);
+        if (e.key === " ") {
+          document.getElementById("gamecanvas").focus();
+        }
+      });
     </script>
-</body>
-
+  </body>
 </html>

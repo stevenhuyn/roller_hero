@@ -10,6 +10,12 @@ const LABEL: &str = "my_fixed_timestep";
 
 #[derive(Component)]
 struct Garbage;
+#[derive(Component)]
+
+struct ScoreText;
+
+#[derive(Default)]
+struct Score(usize);
 
 fn main() {
     App::new()
@@ -37,6 +43,7 @@ fn main() {
         .add_system(sprite_movement)
         .add_system(diamond_mover)
         .add_system(diamond_deleter)
+        .add_system(update_score)
         .run();
 }
 
@@ -57,6 +64,7 @@ fn setup(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
+    asset_server: Res<AssetServer>,
 ) {
     commands.spawn_bundle(Camera2dBundle::default());
     commands.spawn_bundle(MaterialMesh2dBundle {
@@ -66,6 +74,23 @@ fn setup(
         material: materials.add(ColorMaterial::from(Color::GOLD)),
         ..default()
     });
+
+    // Score stuff
+    commands.insert_resource(Score(0));
+    let font = asset_server.load("Roboto-Regular.ttf");
+    let text_style = TextStyle {
+        font,
+        font_size: 60.0,
+        color: Color::WHITE,
+    };
+    let text_alignment = TextAlignment::CENTER_RIGHT;
+    commands
+        .spawn_bundle(Text2dBundle {
+            text: Text::from_section("0", text_style).with_alignment(text_alignment),
+            transform: Transform::from_translation(Vec3::new(400., 400., 0.)),
+            ..default()
+        })
+        .insert(ScoreText);
 }
 
 fn sprite_movement(time: Res<Time>, mut sprite_position: Query<(&mut Direction, &mut Transform)>) {
@@ -88,6 +113,12 @@ struct Diamond;
 
 const DIAMOND_XVEL: f32 = -400.;
 
+fn update_score(score: Res<Score>, mut query: Query<&mut Text, With<ScoreText>>) {
+    for mut text in query.iter_mut() {
+        text.sections[0].value = format!("{}", score.0);
+    }
+}
+
 fn diamond_mover(
     mut commands: Commands,
     mut query: Query<(Entity, &Diamond, &mut Transform)>,
@@ -105,6 +136,7 @@ fn diamond_deleter(
     mut commands: Commands,
     keyboard_input: Res<Input<KeyCode>>,
     mut query: Query<(Entity, &Diamond, &Transform)>,
+    mut score: ResMut<Score>,
 ) {
     for (entity, _, transform) in query.iter_mut() {
         if transform.translation.x - 50. <= -410.
@@ -112,6 +144,7 @@ fn diamond_deleter(
             && keyboard_input.pressed(KeyCode::Space)
         {
             commands.entity(entity).despawn_recursive();
+            score.0 += 100;
         }
     }
 }
